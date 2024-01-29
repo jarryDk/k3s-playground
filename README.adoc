@@ -1,0 +1,44 @@
+= K3S Palyground
+
+
+== NFS server
+
+https://docs.stg.fedoraproject.org/en-US/fedora-server/services/filesharing-nfs-installation/[Fedora Server Documentation / Providing services / File sharing with NFS - Installation]
+
+.Install the server
+[source,bash]
+----
+sudo dnf install nfs-utils -y
+----
+
+[source,bash]
+----
+sudo mkdir /srv/nfsshare
+sudo sudo chmod -R 777 /srv/nfsshare
+sudo echo "/srv/nfsshare 192.168.1.0/24(rw,no_root_squash)" >> /etc/exports
+sudo systemctl enable --now rpcbind nfs-server
+----
+
+[source,bash]
+----
+showmount -e 192.168.1.54
+----
+
+[source,bash]
+----
+sudo mkdir /mnt/nfsfileshare
+sudo mount -t nfs 192.168.1.54:/srv/nfsshare /mnt/nfsfileshare
+----
+
+[source,bash]
+----
+sudo umount /mnt/nfsfileshare
+----
+
+
+[source,bash]
+----
+sudo adduser -c 'nfs pseudo user' -M -r -s /sbin/nologin nfs
+----
+
+Source: https://www.server-world.info/en/note?os=Fedora_39&p=nfs&f=1[Fedora 39 : Configure NFS Server : Server World]
